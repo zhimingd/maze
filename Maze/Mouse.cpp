@@ -1,14 +1,16 @@
 #include "Mouse.h"
-Mouse::Mouse(int newRow, int newCol)
+Mouse::Mouse(int newRow, int newCol) : Item(newRow, newCol)
 {
-	//Default assignments
-	row = 0;
-	col = 0;
-	icon = 0;
+	setIcon();
+}
 
-	//Verify and set to initialization parameters
-	if (newRow >= 0) row = newRow;
-	if (newCol >= 0) col = newCol;
+void Mouse::setIcon()
+{
+	mouseRight = gcnew System::Drawing::Icon("mouseRight.ico");
+	mouseLeft = gcnew System::Drawing::Icon("mouseLeft.ico");
+	mouseUp = gcnew System::Drawing::Icon("mouseUp.ico");
+	mouseDown = gcnew System::Drawing::Icon("mouseDown.ico");
+	icon = 0;
 }
 
 System::Drawing::Icon^ Mouse::getIcon()
