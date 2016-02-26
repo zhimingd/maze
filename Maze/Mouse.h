@@ -9,9 +9,9 @@ protected:
 	static System::Drawing::Icon^ mouseLeft;
 	static System::Drawing::Icon^ mouseUp;
 	static System::Drawing::Icon^ mouseDown;
-private:
-	Mouse(void) {};
 public:
+	Mouse(void) { setIcon(); };
+
 
 	//Initializing Constructor
 	Mouse(int row, int col);

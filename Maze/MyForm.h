@@ -1,9 +1,8 @@
 #pragma once
-#include "Mouse.h"
-#include "Cell.h"
+#include "Maze.h"
 #include "Utility.h"
 
-namespace Maze 
+namespace MazeProject 
 {
 
 	using namespace System;
@@ -41,8 +40,9 @@ namespace Maze
 
 	private:
 		//Instance variables
-		Mouse^ myMouse;
-		array <Cell^, 2>^ maze;
+		//Mouse^ myMouse;
+		//array <Cell^, 2>^ maze;
+		Maze^ maze;
 		char direction;
 
 		//Drawing objects
@@ -54,8 +54,8 @@ namespace Maze
 		Pen^ blackPen;
 
 		//Static constants
-		static const int NUMROWS = 16;
-		static const int NUMCOLS = 20;
+		/*static const int NUMROWS = 16;
+		static const int NUMCOLS = 20;*/
 		static const int CELLSIZE = 25;
 	private: System::Windows::Forms::Panel^  panel1;
 	private: System::Windows::Forms::Button^  button1;
@@ -147,7 +147,7 @@ namespace Maze
 #pragma endregion
 	private: System::Void MyForm_Load(System::Object^  sender, System::EventArgs^  e) {
 
-		int row, col;
+//		int row, col;
 
 
 		g = panel1->CreateGraphics();
@@ -157,15 +157,16 @@ namespace Maze
 
 		blackPen = gcnew System::Drawing::Pen(Color::Black);
 
-		//Construct maze array
-		maze = gcnew array<Cell^, 2>(NUMROWS, NUMCOLS);
-		for (row = 0; row < NUMROWS; row++)
-		{
-			for (col = 0; col < NUMCOLS; col++)
-			{
-				maze[row, col] = gcnew Cell(row, col, true);
-			}
-		}
+		maze = gcnew Maze();
+		////Construct maze array
+		//maze = gcnew array<Cell^, 2>(NUMROWS, NUMCOLS);
+		//for (row = 0; row < NUMROWS; row++)
+		//{
+		//	for (col = 0; col < NUMCOLS; col++)
+		//	{
+		//		maze[row, col] = gcnew Cell(row, col, true);
+		//	}
+		//}
 	}
 
 
@@ -186,9 +187,9 @@ namespace Maze
 		//Set initial direction
 		direction = 'r';
 
-		//Create Mouse
-		
-		myMouse = gcnew Mouse(mouseRow, mouseCol);
+		//Move Mouse
+		maze->getMouse()->MoveTo(mouseRow, mouseCol);
+		//maze->getMouse() = gcnew Mouse(mouseRow, mouseCol);
 	
 		//Draw the maze
 		drawMaze();
@@ -198,15 +199,18 @@ namespace Maze
 		y = cheeseRow * CELLSIZE;
 		Rectangle cheeseRect = Rectangle(x, y, CELLSIZE, CELLSIZE);
 		g->DrawIcon(cheese, cheeseRect);
-		maze[cheeseRow, cheeseCol]->setCheese(true);
+		maze->getGrid()[cheeseRow, cheeseCol]->setCheese(true);
+		//explain
+		//array <Cell^, 2>^ grid= maze->getGrid();
+		//grid[1,0]
 
 		//Draw the mouse
-		myMouse->setRow(mouseRow);
-		myMouse->setCol(mouseCol);
+		//myMouse->setRow(mouseRow);
+		//myMouse->setCol(mouseCol);
 		x = mouseCol * CELLSIZE;
 		y = mouseRow * CELLSIZE;
 		Rectangle mouseRect = Rectangle(x, y, CELLSIZE, CELLSIZE);
-		g->DrawIcon(myMouse->getIcon(), mouseRect);
+		g->DrawIcon(maze->getMouse()->getIcon(), mouseRect);
 
 		//Start the timer
 		timer1->Start();
@@ -217,16 +221,16 @@ namespace Maze
 	private: void drawMaze()
 	{
 		//Declare local variables;
-		int row, col;
+//		int row, col;
 		int x, y;
 
 		//Refresh the panel
 		panel1->Refresh();
 
 		//Draw the empty maze
-		for (row = 0; row < NUMROWS; row++)
+		for (int row = 0; row < maze->NUMROWS; row++)
 		{
-			for (col = 0; col < NUMCOLS; col++)
+			for (int col = 0; col < maze->NUMCOLS; col++)
 			{
 				x = col * CELLSIZE;
 				y = row * CELLSIZE;
@@ -239,16 +243,16 @@ namespace Maze
 	private: bool edge()
 	{
 		if (direction == 'r') {
-			if (myMouse->getCol() < NUMCOLS - 1) return false;
+			if (maze->getMouse()->getCol() < maze->NUMCOLS - 1) return false;
 		}
 		else if (direction == 'l') {
-			if (myMouse->getCol() > 0) return false;
+			if (maze->getMouse()->getCol() > 0) return false;
 		}
 		else if (direction == 'u') {
-			if (myMouse->getRow() > 0) return false;
+			if (maze->getMouse()->getRow() > 0) return false;
 		}
 		else if (direction == 'd') {
-			if (myMouse->getRow() < NUMROWS - 1) return false;
+			if (maze->getMouse()->getRow() < maze->NUMROWS - 1) return false;
 		}
 		return true;
 
@@ -259,10 +263,10 @@ namespace Maze
 		int row, col;
 
 		//Initializing local variables;
-		row = myMouse->getRow();
-		col = myMouse->getCol();
-		x = myMouse->getCol() * CELLSIZE;
-		y = myMouse->getRow() * CELLSIZE;
+		row = maze->getMouse()->getRow();
+		col = maze->getMouse()->getCol();
+		x = maze->getMouse()->getCol() * CELLSIZE;
+		y = maze->getMouse()->getRow() * CELLSIZE;
 
 		//Create current myMouse position
 		Rectangle oldRect = Rectangle(x, y, CELLSIZE, CELLSIZE);
@@ -274,45 +278,45 @@ namespace Maze
 			g->FillRectangle(burlyBrush, oldRect);
 			g->DrawRectangle(blackPen, oldRect);
 			
-			maze[row, col]->setAccess(false);
+			maze->getGrid()[row, col]->setAccess(false);
 
 			//Move in the chosen direction
 			//direction = pickupADirection();
 			switch (direction)
 			{
 			case 'r':
-				myMouse->goRight();
+				maze->getMouse()->goRight();
 				break;
 			case 'l':
-				myMouse->goLeft();
+				maze->getMouse()->goLeft();
 				break;
 			case 'u':
-				myMouse->goUp();
+				maze->getMouse()->goUp();
 				break;
 			case 'd':
-				myMouse->goDown();
+				maze->getMouse()->goDown();
 				break;
 			}
 
 
 			//Draw mouse at new location
-			row = myMouse->getRow();
-			col = myMouse->getCol();
+			row = maze->getMouse()->getRow();
+			col = maze->getMouse()->getCol();
 
 			//Check access if never access then go ahead
-			if (maze[row, col]->getAccess())
+			if (maze->getGrid()[row, col]->getAccess())
 			{
 
 
 				x = col * CELLSIZE;
 				y = row * CELLSIZE;
 				Rectangle mouseRect = Rectangle(x, y, CELLSIZE, CELLSIZE);
-				g->DrawIcon(myMouse->getIcon(), mouseRect);
+				g->DrawIcon(maze->getMouse()->getIcon(), mouseRect);
 
 				//if mouse moves into cell with cheese, congratulations!
-				if (maze[row, col]->getCheese())
+				if (maze->getGrid()[row, col]->getCheese())
 				{
-					maze[row, col]->setCheese(false);
+					maze->getGrid()[row, col]->setCheese(false);
 					timer1->Stop();
 					MessageBox::Show("Congratulation!", "You found it");
 				}

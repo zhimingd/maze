@@ -10,7 +10,7 @@ void Main(array<String^>^ args)
 	Application::EnableVisualStyles();
 	Application::SetCompatibleTextRenderingDefault(false);
 
-	Maze::MyForm form;
+	MazeProject::MyForm form;
 	Application::Run(%form);
 }
 

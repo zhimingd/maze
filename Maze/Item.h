@@ -28,5 +28,12 @@ public:
 	void setRow(int newRow) { row = newRow; }
 	void setCol(int newCol) { col = newCol; }
 
+	void MoveTo(int newRow, int newCol)
+	{
+		setRow(newRow);
+		setCol(newCol); 
+
+	};
+
 	
 };
