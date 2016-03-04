@@ -50,6 +50,7 @@ namespace MazeProject
 		Brush^ grayBrush;
 		Brush^ whiteBrush;
 		Brush^ burlyBrush;
+		Brush^ paleTurquoiseBrush;
 
 		Pen^ blackPen;
 
@@ -154,7 +155,7 @@ namespace MazeProject
 		grayBrush = gcnew System::Drawing::SolidBrush(Color::Gray);
 		whiteBrush = gcnew System::Drawing::SolidBrush(Color::White);
 		burlyBrush = gcnew System::Drawing::SolidBrush(Color::BurlyWood);
-
+		paleTurquoiseBrush = gcnew System::Drawing::SolidBrush(Color::PaleTurquoise);
 		blackPen = gcnew System::Drawing::Pen(Color::Black);
 
 		maze = gcnew Maze();
@@ -275,7 +276,10 @@ namespace MazeProject
 		if (!edge())
 		{
 			//Fill old mouse position with BurlyWood
-			g->FillRectangle(burlyBrush, oldRect);
+			if( maze->getGrid()[row,col]->getAccess())
+				g->FillRectangle(paleTurquoiseBrush, oldRect);
+			else
+				g->FillRectangle(burlyBrush, oldRect);
 			g->DrawRectangle(blackPen, oldRect);
 			
 			maze->getGrid()[row, col]->setAccess(false);
